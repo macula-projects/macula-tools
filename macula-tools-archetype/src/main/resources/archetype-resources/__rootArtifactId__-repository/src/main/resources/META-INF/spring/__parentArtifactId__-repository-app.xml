@@ -13,6 +13,6 @@
 			http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
 	<jpa:repositories base-package="${package}.repository" entity-manager-factory-ref="entityManagerFactory_${parentArtifactId}"
-		transaction-manager-ref="${symbol_pound}{T(org.macula.Configuration).getTransactionManagerName()}" factory-class="org.macula.core.repository.MaculaJpaRepositoryFactoryBean" />
+		transaction-manager-ref="transactionManager_${parentArtifactId}" factory-class="org.macula.core.repository.MaculaJpaRepositoryFactoryBean" />
 
 </beans> 
