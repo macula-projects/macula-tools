@@ -78,7 +78,7 @@
 					</webResources>
 					<archive>
 						<manifestEntries>
-							<Manifest-Version>${rootArtifactId}-${environment}[${project.version}.${buildNumber}]</Manifest-Version>
+							<Manifest-Version>${rootArtifactId}-${environment}[${project.version}.b${buildNumber}]</Manifest-Version>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -93,7 +93,7 @@
 				<environment>dev</environment>
 			</properties>
 			<build>
-				<finalName>${rootArtifactId}-${environment}[${project.version}.${buildNumber}]</finalName>
+				<finalName>${rootArtifactId}-${environment}[${project.version}.b${buildNumber}]</finalName>
 				<plugins>
 					<plugin>
 						<artifactId>maven-resources-plugin</artifactId>
@@ -125,7 +125,7 @@
 				<environment>test</environment>
 			</properties>
 			<build>
-				<finalName>${rootArtifactId}-${environment}[${project.version}.${buildNumber}]</finalName>
+				<finalName>${rootArtifactId}-${environment}[${project.version}.b${buildNumber}]</finalName>
 				<plugins>
 					<plugin>
 						<artifactId>maven-resources-plugin</artifactId>
@@ -157,7 +157,7 @@
 				<environment>staging</environment>
 			</properties>
 			<build>
-				<finalName>${rootArtifactId}-${environment}[${project.version}.${buildNumber}]</finalName>
+				<finalName>${rootArtifactId}-${environment}[${project.version}.b${buildNumber}]</finalName>
 				<plugins>
 					<plugin>
 						<artifactId>maven-resources-plugin</artifactId>
@@ -192,7 +192,7 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<build>
-				<finalName>${rootArtifactId}-${environment}[${project.version}.${buildNumber}]</finalName>
+				<finalName>${rootArtifactId}-${environment}[${project.version}.b${buildNumber}]</finalName>
 				<plugins>
 					<plugin>
 						<artifactId>maven-resources-plugin</artifactId>
