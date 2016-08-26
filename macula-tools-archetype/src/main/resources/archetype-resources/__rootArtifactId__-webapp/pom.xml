@@ -29,7 +29,11 @@
 		<dependency>
 			<groupId>org.macula.plugins</groupId>
 			<artifactId>macula-plugins-admin</artifactId>
-		</dependency>				
+		</dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>${groupId}</groupId>
 			<artifactId>${rootArtifactId}-admin</artifactId>
