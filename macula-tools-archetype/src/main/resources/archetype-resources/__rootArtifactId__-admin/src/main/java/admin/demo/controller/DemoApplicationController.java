@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @version ${symbol_dollar}Id: DempApplicationController.java 5956 2015-11-17 03:48:27Z wzp ${symbol_dollar}
  */
 @Controller
-public class DempApplicationController extends DemoBaseController {
+public class DemoApplicationController extends DemoBaseController {
 	@Autowired
 	private DemoApplicationService demoApplicationService;
 
