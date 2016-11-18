@@ -24,10 +24,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.macula.plugins</groupId>
-			<artifactId>macula-plugins-monitor</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.macula.plugins</groupId>
 			<artifactId>macula-plugins-admin</artifactId>
 		</dependency>
         <dependency>

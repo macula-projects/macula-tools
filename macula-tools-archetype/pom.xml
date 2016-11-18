@@ -5,7 +5,7 @@
 
 	<groupId>org.macula.tools</groupId>
 	<artifactId>macula-tools-archetype</artifactId>
-	<version>1.0.4.RELEASE</version>
+	<version>1.0.5.RELEASE</version>
 	<packaging>maven-archetype</packaging>
 
 	<name>macula-tools-archetype</name>
