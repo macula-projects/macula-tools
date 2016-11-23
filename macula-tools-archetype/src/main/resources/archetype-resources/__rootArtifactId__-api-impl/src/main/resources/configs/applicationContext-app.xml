@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2010-2012 the original author or authors. Licensed under the Apache License, Version 2.0 (the "License"); 
+	you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS 
+	IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language 
+	governing permissions and limitations under the License. -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd 
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://code.alibabatech.com/schema/dubbo http://macula.top/schema/dubbo/dubbo.xsd">
+	
+	<import resource="classpath*:/META-INF/spring/macula-*-app.xml" />
+	
+	<context:component-scan base-package="org.macula.core.config,org.macula.core.config,${package}.**.config">
+		<context:include-filter type="annotation" expression="org.springframework.context.annotation.Configuration"/>
+		<context:include-filter type="assignable" expression="org.macula.core.config.MaculaAppConfig"/>
+	</context:component-scan>
+
+	<bean id="abstractEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+		abstract="true">
+		<property name="jpaVendorAdapter">
+			<bean class="org.macula.core.hibernate.HibernateJpaVendorAdapter">
+				<property name="database" value="#{T(org.macula.Configuration).getDatabase()}" />
+				<property name="showSql" value="#{T(org.macula.Configuration).getShowSql()}" />
+				<property name="generateDdl" value="#{T(org.macula.Configuration).getGenerateDdl()}" />
+			</bean>
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.ejb.event.post-update">org.macula.core.hibernate.audit.AuditedEventListener</prop>
+				<prop key="hibernate.ejb.event.post-delete">org.macula.core.hibernate.audit.AuditedEventListener</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- ===========================${parentArtifactId} Schema======================================================================== -->
+	<!-- ${parentArtifactId} Entity Manager -->
+	<bean id="entityManagerFactory_${parentArtifactId}" parent="abstractEntityManagerFactory">
+		<property name="persistenceUnitManager">
+			<bean class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
+				<property name="defaultPersistenceUnitName">
+					<value>${parentArtifactId}</value>
+				</property>
+				<property name="defaultDataSource" ref="${parentArtifactId}_dataSource" />
+				<property name="packagesToScan">
+					<array>
+						<value>${package}.domain</value>
+					</array>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="transactionManager_${parentArtifactId}" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory_${parentArtifactId}" />
+	</bean>	
+
+	<!-- @Transaction -->
+	<tx:advice id="${parentArtifactId}TxAdvise" transaction-manager="transactionManager_${parentArtifactId}" />
+	<aop:config>
+		<aop:pointcut id="${parentArtifactId}Pointcut"
+			expression="execution(* ${package}..*.*(..)) and @within(org.springframework.stereotype.Service)" />
+		<aop:advisor advice-ref="${parentArtifactId}TxAdvise" pointcut-ref="${parentArtifactId}Pointcut" />
+		<aop:aspect id="exceptionAspect" ref="exceptionHandler">
+			<aop:after-throwing pointcut-ref="${parentArtifactId}Pointcut" method="doAfterThrowing" throwing="ex" />
+		</aop:aspect>
+	</aop:config>
+
+	<bean id="jdbcTemplate_${parentArtifactId}" class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg index="0" ref="${parentArtifactId}_dataSource" />
+	</bean>
+
+	<!-- i18n resources -->
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<!-- Macula Messages -->
+				<value>classpath:i18n/macula-core/validation</value>
+				<value>classpath:i18n/macula-core/messages</value>
+				<value>classpath:i18n/macula-plugins-dubbo/messages</value>
+				
+				<!-- ${parentArtifactId} Messages -->
+				<value>classpath:i18n/${parentArtifactId}-admin/messages</value>
+				<value>classpath:i18n/${parentArtifactId}-front/messages</value>
+				<value>classpath:i18n/${parentArtifactId}-mobile/messages</value>
+				<value>classpath:i18n/${parentArtifactId}-repository/messages</value>
+				<value>classpath:i18n/${parentArtifactId}-service/messages</value>
+				<value>classpath:i18n/${parentArtifactId}-webapp/messages</value>
+			</list>
+		</property>
+		<property name="defaultEncoding" value="utf-8" />
+		<property name="fallbackToSystemLocale" value="false" />
+	</bean>
+
+	<aop:aspectj-autoproxy />
+</beans>
