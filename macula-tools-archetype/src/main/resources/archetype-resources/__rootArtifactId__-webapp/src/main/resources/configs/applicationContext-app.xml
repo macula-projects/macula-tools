@@ -1,6 +1,3 @@
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2010-2012 the original author or authors. Licensed under the Apache License, Version 2.0 (the "License"); 
 	you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
@@ -19,7 +16,9 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<import resource="classpath*:/META-INF/spring/macula-*-app.xml" />
-	<context:component-scan base-package="org.macula.core.config, org.macula.base.config, org.macula.cart.**.config">
+	
+	<!-- 如果业务系统的Configuration注解类放在不同包，请添加在base-package中 -->
+	<context:component-scan base-package="org.macula.**.config">
 		<context:include-filter type="annotation" expression="org.springframework.context.annotation.Configuration"/>
 		<context:include-filter type="assignable" expression="org.macula.core.config.MaculaAppConfig"/>
 	</context:component-scan>
@@ -28,9 +27,9 @@
 		abstract="true">
 		<property name="jpaVendorAdapter">
 			<bean class="org.macula.core.hibernate.HibernateJpaVendorAdapter">
-				<property name="database" value="${symbol_pound}{T(org.macula.Configuration).getDatabase()}" />
-				<property name="showSql" value="${symbol_pound}{T(org.macula.Configuration).getShowSql()}" />
-				<property name="generateDdl" value="${symbol_pound}{T(org.macula.Configuration).getGenerateDdl()}" />
+				<property name="database" value="#{T(org.macula.Configuration).getDatabase()}" />
+				<property name="showSql" value="#{T(org.macula.Configuration).getShowSql()}" />
+				<property name="generateDdl" value="#{T(org.macula.Configuration).getGenerateDdl()}" />
 			</bean>
 		</property>
 		<property name="jpaProperties">
@@ -41,7 +40,6 @@
 		</property>
 	</bean>
 
-	<!-- ===========================Macual Schema======================================================================== -->
 	<!-- Macula Entity Manager -->
 	<bean id="entityManagerFactory_macula" parent="abstractEntityManagerFactory">
 		<property name="persistenceUnitManager">
@@ -63,9 +61,10 @@
 	</bean>
 
 	<bean id="transactionManager_macula" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="${symbol_pound}{T(org.macula.Configuration).getEntityManagerFactoryName()}" />
+		<property name="entityManagerFactory" ref="#{T(org.macula.Configuration).getEntityManagerFactoryName()}" />
 	</bean>
-	
+
+
 	<!-- @Transaction -->
 	<tx:advice id="maculaTxAdvise" transaction-manager="transactionManager_macula" />
 	<aop:config>
@@ -82,43 +81,6 @@
 		<constructor-arg index="0" ref="macula_dataSource" />
 	</bean>
 
-	<!-- ===========================${parentArtifactId} Schema======================================================================== -->
-	<!-- ${parentArtifactId} Entity Manager -->
-	<bean id="entityManagerFactory_${parentArtifactId}" parent="abstractEntityManagerFactory">
-		<property name="persistenceUnitManager">
-			<bean class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
-				<property name="defaultPersistenceUnitName">
-					<value>${parentArtifactId}</value>
-				</property>
-				<property name="defaultDataSource" ref="${parentArtifactId}_dataSource" />
-				<property name="packagesToScan">
-					<array>
-						<value>${package}.domain</value>
-					</array>
-				</property>
-			</bean>
-		</property>
-	</bean>
-
-	<bean id="transactionManager_${parentArtifactId}" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="entityManagerFactory_${parentArtifactId}" />
-	</bean>	
-
-	<!-- @Transaction -->
-	<tx:advice id="${parentArtifactId}TxAdvise" transaction-manager="transactionManager_${parentArtifactId}" />
-	<aop:config>
-		<aop:pointcut id="${parentArtifactId}Pointcut"
-			expression="execution(* ${package}..*.*(..)) and @within(org.springframework.stereotype.Service)" />
-		<aop:advisor advice-ref="${parentArtifactId}TxAdvise" pointcut-ref="${parentArtifactId}Pointcut" />
-		<aop:aspect id="exceptionAspect" ref="exceptionHandler">
-			<aop:after-throwing pointcut-ref="${parentArtifactId}Pointcut" method="doAfterThrowing" throwing="ex" />
-		</aop:aspect>
-	</aop:config>
-
-	<bean id="jdbcTemplate_${parentArtifactId}" class="org.springframework.jdbc.core.JdbcTemplate">
-		<constructor-arg index="0" ref="${parentArtifactId}_dataSource" />
-	</bean>
-
 	<!-- i18n resources -->
 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<property name="basenames">
@@ -132,14 +94,7 @@
 				<value>classpath:i18n/macula-plugins-mda/messages</value>
 				<value>classpath:i18n/macula-plugins-flow/messages</value>
 				<value>classpath:i18n/macula-plugins-webapp/messages</value>
-				
-				<!-- ${parentArtifactId} Messages -->
-				<value>classpath:i18n/${parentArtifactId}-admin/messages</value>
-				<value>classpath:i18n/${parentArtifactId}-front/messages</value>
-				<value>classpath:i18n/${parentArtifactId}-mobile/messages</value>
-				<value>classpath:i18n/${parentArtifactId}-repository/messages</value>
-				<value>classpath:i18n/${parentArtifactId}-service/messages</value>
-				<value>classpath:i18n/${parentArtifactId}-webapp/messages</value>
+				<value>classpath:i18n/macula-plugins-dubbo/messages</value>
 			</list>
 		</property>
 		<property name="defaultEncoding" value="utf-8" />

@@ -26,6 +26,10 @@
 			<groupId>org.macula.plugins</groupId>
 			<artifactId>macula-plugins-admin</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.macula.plugins</groupId>
+			<artifactId>macula-plugins-catex</artifactId>
+		</dependency>		
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
