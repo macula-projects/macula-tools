@@ -57,7 +57,7 @@
 	</dependencies>
 
 	<build>
-		<finalName><finalName>${rootArtifactId}-${environment}[${project.version}.b${buildNumber}]</finalName></finalName>
+		<finalName>${rootArtifactId}-${environment}[${project.version}.b${buildNumber}]</finalName>
 		<plugins>
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
