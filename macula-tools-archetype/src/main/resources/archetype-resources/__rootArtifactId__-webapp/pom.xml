@@ -57,7 +57,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>${rootArtifactId}-webapp</finalName>
+		<finalName><finalName>${rootArtifactId}-${environment}[${project.version}.b${buildNumber}]</finalName></finalName>
 		<plugins>
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
@@ -92,6 +92,27 @@
 					</archive>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/classes</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/deploy/${environment}</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -101,131 +122,24 @@
 			<properties>
 				<environment>dev</environment>
 			</properties>
-			<build>
-				<finalName>${rootArtifactId}-${environment}[${project.version}.b${buildNumber}]</finalName>
-				<plugins>
-					<plugin>
-						<artifactId>maven-resources-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>copy-resources</id>
-								<phase>validate</phase>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<configuration>
-									<outputDirectory>target/classes</outputDirectory>
-									<resources>
-										<resource>
-											<directory>src/main/deploy/${environment}</directory>
-											<filtering>true</filtering>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 		<profile>
 			<id>test</id>
 			<properties>
 				<environment>test</environment>
 			</properties>
-			<build>
-				<finalName>${rootArtifactId}-${environment}[${project.version}.b${buildNumber}]</finalName>
-				<plugins>
-					<plugin>
-						<artifactId>maven-resources-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>copy-resources</id>
-								<phase>validate</phase>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<configuration>
-									<outputDirectory>target/classes</outputDirectory>
-									<resources>
-										<resource>
-											<directory>src/main/deploy/${environment}</directory>
-											<filtering>true</filtering>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 		<profile>
 			<id>staging</id>
 			<properties>
 				<environment>staging</environment>
 			</properties>
-			<build>
-				<finalName>${rootArtifactId}-${environment}[${project.version}.b${buildNumber}]</finalName>
-				<plugins>
-					<plugin>
-						<artifactId>maven-resources-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>copy-resources</id>
-								<phase>validate</phase>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<configuration>
-									<outputDirectory>target/classes</outputDirectory>
-									<resources>
-										<resource>
-											<directory>src/main/deploy/${environment}</directory>
-											<filtering>true</filtering>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 		<profile>
 			<id>prd</id>
 			<properties>
 				<environment>prd</environment>
 			</properties>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<finalName>${rootArtifactId}-${environment}[${project.version}.b${buildNumber}]</finalName>
-				<plugins>
-					<plugin>
-						<artifactId>maven-resources-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>copy-resources</id>
-								<phase>validate</phase>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<configuration>
-									<outputDirectory>target/classes</outputDirectory>
-									<resources>
-										<resource>
-											<directory>src/main/deploy/${environment}</directory>
-											<filtering>true</filtering>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 	</profiles>
 </project>
